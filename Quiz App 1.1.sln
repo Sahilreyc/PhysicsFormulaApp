@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2017
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quiz App 1.1", "Quiz App 1.1.csproj", "{DFBA41F6-1BDF-D98C-5F00-86AD87E9B771}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quiz App 1.1.Editor", "Quiz App 1.1.Editor.csproj", "{A23F9E67-8948-C98B-6AF0-C432A3876D67}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFBA41F6-1BDF-D98C-5F00-86AD87E9B771}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFBA41F6-1BDF-D98C-5F00-86AD87E9B771}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFBA41F6-1BDF-D98C-5F00-86AD87E9B771}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFBA41F6-1BDF-D98C-5F00-86AD87E9B771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A23F9E67-8948-C98B-6AF0-C432A3876D67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A23F9E67-8948-C98B-6AF0-C432A3876D67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A23F9E67-8948-C98B-6AF0-C432A3876D67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A23F9E67-8948-C98B-6AF0-C432A3876D67}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
