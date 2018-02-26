@@ -1,0 +1,210 @@
+
+
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class GameManager : MonoBehaviour
+{
+    [Header("Classes")]
+    public CategoryManager categoryManager;
+    public SaveLoadManager saveLoadManager;
+    public UIManager uiManager;
+
+    [Header("Game UI")]
+    public Image categoryIcon;
+    public Slider timerSlider;
+    public Text scoreText;
+    public GameObject preventActions;
+    public Image[] awnserButtons;
+    public Color defaultColor;
+    public Color correctColor;
+    public Color wrongColor;
+
+    [Header("Format 1")]
+    public GameObject questionFormat1;
+    public Text statementText1;
+
+    [Header("Format 2")]
+    public GameObject questionFormat2;
+    public Image questionImage;
+    public Text statementText2;
+
+    [Header("Game Over UI")]
+    public Text gameOverScore;
+    public GameObject newHighScore;
+
+    [Header("Game Variables")]
+    public int questionsToAsk;
+    public float timeToAwnserQuestion;
+    public float delayBetweenRounds;
+    public float scoreMultiplier;
+
+    //Game Variables
+    private List<Question> questions;
+    public static int currentCategory;
+    public static bool gameStarted;
+    private float currentTime;
+    private float currentScore;
+    private int currentQuestion;
+    private bool statementTrue;
+    private float elaspedTime;
+    private bool roundOver;
+    private bool awnserRight;
+
+    private void Update()
+    {
+        if (gameStarted == true)
+        {
+            scoreText.text = currentScore.ToString();
+            Timer();
+            DelayTimer();
+        }
+    }
+
+    public void StartGame() //Starts the game.
+    {
+        currentScore = 0;
+        currentQuestion = 0;
+        timerSlider.value = timeToAwnserQuestion;
+        categoryIcon.sprite = categoryManager.defaultCategories[currentCategory].category.categoryImage;
+        questions = categoryManager.defaultCategories[currentCategory].questions;
+
+        System.Random rnd = new System.Random();
+        for (int i = 1; i < questions.Count; i++)
+        {
+            int pos = rnd.Next(i + 1);
+            var x = questions[i];
+            questions[i] = questions[pos];
+            questions[pos] = x;
+        }
+        gameStarted = true;
+        NextQuestion();
+    }
+
+    public void NextQuestion() //Executes the next question.
+    {
+        if (currentQuestion < questionsToAsk)
+        {
+            foreach (Image i in awnserButtons)
+                i.color = defaultColor;
+
+            currentTime = timeToAwnserQuestion;
+            elaspedTime = 0;
+
+            statementTrue = questions[currentQuestion].statementTrue;
+
+            if (questions[currentQuestion].statementImage == null)
+            {
+                questionFormat1.SetActive(true);
+                questionFormat2.SetActive(false);
+                statementText1.text = questions[currentQuestion].statement;
+            }
+
+            else
+            {
+                questionFormat1.SetActive(false);
+                questionFormat2.SetActive(true);
+                statementText2.text = questions[currentQuestion].statement;
+                questionImage.sprite = questions[currentQuestion].statementImage;
+            }
+
+            currentQuestion++;
+        }
+        else
+            GameOver();    
+    }
+
+    private void Timer() //Timer before the game ends.
+    {
+        if (roundOver == false && gameStarted == true)
+        {
+            currentTime -= Time.deltaTime;
+            timerSlider.value = currentTime;
+            if (currentTime <= 0) 
+                NextQuestion();
+        }
+    }
+
+    public void AwnserTrue(int thisAwnser) //Awnsers True
+    {
+        if (statementTrue == true)
+        {
+            awnserButtons[thisAwnser].GetComponent<Image>().color = correctColor;
+            awnserRight = true;
+        }
+        else
+        {
+            awnserButtons[thisAwnser].GetComponent<Image>().color = wrongColor;
+            awnserRight = false;
+        }
+        roundOver = true;
+    }
+
+    public void AwnserFalse(int thisAwnser) //Awnsers False
+    {
+        if (statementTrue == false)
+        {
+            awnserButtons[thisAwnser].GetComponent<Image>().color = correctColor;
+            awnserRight = true;
+        }
+        else
+        {
+            awnserButtons[thisAwnser].GetComponent<Image>().color = wrongColor;
+            awnserRight = false;
+        }
+        roundOver = true;
+    }
+
+    private void DelayTimer()
+    {
+        if (roundOver == true)
+        {
+            elaspedTime += Time.deltaTime;
+            preventActions.SetActive(true);
+            if (elaspedTime >= delayBetweenRounds)
+            {
+                elaspedTime = 0;
+                if (awnserRight == true)
+                {
+                    currentScore += currentTime * scoreMultiplier;
+                    currentScore = (float)System.Math.Round(currentScore);
+                }
+                preventActions.SetActive(false);
+                roundOver = false;
+                NextQuestion();
+            }
+        }
+    }
+
+    public void Pause() //Pauses the game.
+    {
+        gameStarted = false;
+        uiManager.ChangeUI(4);
+    }
+
+    public void UnPause() //UnPauses the game.
+    {
+        gameStarted = true;
+        uiManager.ChangeUI(3);
+    }
+
+    public void GameOver() //Ends the game.
+    {
+        gameStarted = false;
+
+        uiManager.ChangeUI(5);
+        gameOverScore.text = "Score: " + currentScore;
+
+        if (currentScore > categoryManager.categoriesPlayMode[currentCategory].categoryHighScore)
+        {
+            categoryManager.categoriesPlayMode[currentCategory].categoryHighScore = (int)currentScore;
+            newHighScore.SetActive(true);
+        }
+        else
+            newHighScore.SetActive(false);
+
+        saveLoadManager.Save();
+    }
+}
